@@ -1,12 +1,12 @@
 ﻿using System;
 
-namespace Websocket_Server
+namespace WebsocketServer
 {
     class Program
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+			var app = new MyApplication();
         }
     }
 }

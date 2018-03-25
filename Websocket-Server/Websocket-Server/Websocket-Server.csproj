@@ -6,6 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="WebSocketSharp" Version="1.0.3-rc11" />
+    <Reference Include="websocket-sharp">
+      <HintPath>websocket-sharp.dll</HintPath>
+    </Reference>
   </ItemGroup>
 </Project>
