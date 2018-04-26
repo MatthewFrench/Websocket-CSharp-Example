@@ -5,6 +5,7 @@ namespace WebsocketServer
 {
     public class NetworkingClient : WebSocketBehavior
     {
+		ServerController serverController;
         protected override void OnOpen()
         {
             Console.WriteLine("On Open");
@@ -28,5 +29,12 @@ namespace WebsocketServer
 
             Console.WriteLine("On Message: " + e.Data);
         }
+
+		public void setServerController(ServerController controller) {
+			serverController = controller;
+		}
+		public ServerController GetServerController() {
+			return serverController;
+		}
     }
 }

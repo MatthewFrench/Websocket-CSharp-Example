@@ -6,7 +6,7 @@ namespace WebsocketServer
     {
         static void Main(string[] args)
         {
-			var app = new MyApplication();
+			var app = new ServerController();
         }
     }
 }

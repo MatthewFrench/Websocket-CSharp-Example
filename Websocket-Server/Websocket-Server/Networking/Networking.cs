@@ -5,14 +5,18 @@ namespace WebsocketServer
 {
 	public class Networking
 	{
+		int port = 7779;
 		WebSocketServer websocketServer;
-		public Networking() {
-			websocketServer = new WebSocketServer(7779);
+		ServerController serverController;
+		public Networking(ServerController controller) {
+			serverController = controller;
+			websocketServer = new WebSocketServer(port);
             //SSL certificate
             //wssv.SslConfiguration.ServerCertificate = 
             //  new X509Certificate2("/path/to/cert.pfx", "password for cert.pfx");
-			websocketServer.AddWebSocketService<NetworkingClient>("/Networking", (NetworkingClient client) => {
+			websocketServer.AddWebSocketService<NetworkingClient>("/", (NetworkingClient client) => {
 				//Set client variables here, like reference to application instance
+				client.setServerController(serverController);
 			});
 		}
 		public void Start() {

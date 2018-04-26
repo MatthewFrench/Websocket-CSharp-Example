@@ -10,4 +10,7 @@
       <HintPath>websocket-sharp.dll</HintPath>
     </Reference>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Networking\" />
+  </ItemGroup>
 </Project>

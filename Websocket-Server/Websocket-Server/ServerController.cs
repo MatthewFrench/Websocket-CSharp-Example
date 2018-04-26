@@ -3,13 +3,13 @@ using WebSocketSharp;
 using WebSocketSharp.Server;
 namespace WebsocketServer
 {
-    public class MyApplication
+    public class ServerController
     {
-        public MyApplication()
+        public ServerController()
         {
 			Console.WriteLine("Hello World!");
 
-            var networking = new Networking();
+            var networking = new Networking(this);
             networking.Start();
             Console.ReadKey(true);
             networking.Stop();
