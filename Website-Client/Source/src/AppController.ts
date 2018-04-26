@@ -13,6 +13,7 @@ export class AppController {
         this.mainDiv = Interface.Create({type: 'div', className: 'ApplicationDiv', elements: [
             this.mainPage.getInterface()
         ]});
+        this.networkController.initialize();
     }
 
     getInterface() {

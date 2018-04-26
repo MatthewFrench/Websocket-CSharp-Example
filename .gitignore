@@ -4,3 +4,4 @@ Websocket-Server/Websocket-Server/obj/
 **/.idea
 **/dist
 **/node_modules
+Website-Client/Source/yarn.lock

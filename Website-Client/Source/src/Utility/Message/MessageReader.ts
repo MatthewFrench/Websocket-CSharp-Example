@@ -1,130 +1,137 @@
-let Buffer = require('buffer/').Buffer;
+import {Utility} from "../Utility";
 
 export class MessageReader {
-    constructor(messageData) {
-        this.byteData = Buffer.from(messageData);
+    currentLoc : number;
+    byteData : DataView;
+    byteLength : number;
+    constructor(messageData : ArrayBuffer) {
+        this.byteData = new DataView(messageData);
         this.currentLoc = 0;
         this.byteLength = this.getUint32();
         //Throw an error if the message is an incorrect length
-        if (this.byteLength !== this.byteData.length) {
+        if (this.byteLength !== this.byteData.byteLength) {
             throw 'Message Incorrect Length';
         }
     }
 
-    isAtEndOfData() {
+    isAtEndOfData() : boolean {
         return this.byteLength === this.currentLoc;
     }
 
-    hasUint8() {
+    hasUint8() : boolean {
         return (this.currentLoc + 1) <= this.byteLength;
     }
 
-    getUint8() {
-        let data = this.byteData.readUInt8(this.currentLoc, true);
+    getUint8() : number {
+        let data = this.byteData.getUint8(this.currentLoc);
         this.currentLoc += 1;
         return data;
     }
 
-    hasInt8() {
+    hasInt8() : boolean {
         return (this.currentLoc + 1) <= this.byteLength;
     }
 
-    getInt8() {
-        let data = this.byteData.readInt8(this.currentLoc, true);
+    getInt8() : number {
+        let data = this.byteData.getInt8(this.currentLoc);
         this.currentLoc += 1;
         return data;
     }
 
-    hasUint16() {
+    hasUint16() : boolean {
         return (this.currentLoc + 2) <= this.byteLength;
     }
 
-    getUint16() {
-        let data = this.byteData.readUInt16BE(this.currentLoc, true);
+    getUint16() : number {
+        let data = this.byteData.getUint16(this.currentLoc, true);
         this.currentLoc += 2;
         return data;
     }
 
-    hasInt16() {
+    hasInt16() : boolean {
         return (this.currentLoc + 2) <= this.byteLength;
     }
 
-    getInt16() {
-        let data = this.byteData.readInt16BE(this.currentLoc, true);
+    getInt16() : number {
+        let data = this.byteData.getInt16(this.currentLoc, true);
         this.currentLoc += 2;
         return data;
     }
 
-    hasUint32() {
+    hasUint32() : boolean {
         return (this.currentLoc + 4) <= this.byteLength;
     }
 
-    getUint32() {
-        let data = this.byteData.readUInt32BE(this.currentLoc, true);
+    getUint32() : number {
+        let data = this.byteData.getUint32(this.currentLoc, true);
         this.currentLoc += 4;
         return data;
     }
 
-    hasInt32() {
+    hasInt32() : boolean {
         return (this.currentLoc + 4) <= this.byteLength;
     }
 
-    getInt32() {
-        let data = this.byteData.readInt32BE(this.currentLoc, true);
+    getInt32() : number {
+        let data = this.byteData.getInt32(this.currentLoc, true);
         this.currentLoc += 4;
         return data;
     }
 
-    hasDouble() {
+    hasDouble() : boolean {
         return (this.currentLoc + 8) <= this.byteLength;
     }
 
-    getDouble() {
-        let data = this.byteData.readDoubleBE(this.currentLoc, true);
+    getFloat64() : number {
+        let data = this.byteData.getFloat32(this.currentLoc, true);
         this.currentLoc += 8;
         return data;
     }
 
-    hasFloat() {
+    hasFloat64() : boolean {
+        return (this.currentLoc + 8) <= this.byteLength;
+    }
+
+    hasFloat32() : boolean {
         return (this.currentLoc + 4) <= this.byteLength;
     }
 
-    getFloat() {
-        let data = this.byteData.readFloatBE(this.currentLoc, true);
+    getFloat32() : number {
+        let data = this.byteData.getFloat64(this.currentLoc, true);
         this.currentLoc += 4;
         return data;
     }
 
-    hasString() {
-        let length = this.byteData.readUInt32BE(this.currentLoc, true);
+    hasString() : boolean {
+        let length = this.byteData.getUint32(this.currentLoc, true);
         return (this.currentLoc + length) <= this.byteLength;
     }
 
-    getString() {
-        let length = this.byteData.readUInt32BE(this.currentLoc, true);
+    getString() : string {
+        let length = this.byteData.getUint32(this.currentLoc, true);
         this.currentLoc += 4;
         let innerLength = length - 4;
-        let string = this.byteData.toString("utf8", this.currentLoc, this.currentLoc + innerLength);
+        let stringBuffer = this.byteData.buffer.slice(this.currentLoc, this.currentLoc + innerLength);
+        let string = Utility.ArrayBufferToString(stringBuffer);
         this.currentLoc += innerLength;
         return string;
     }
 
-    hasBinary() {
-        let length = this.byteData.readUInt32BE(this.currentLoc, true);
+    hasBinary() : boolean {
+        let length = this.byteData.getUint32(this.currentLoc, true);
         return (this.currentLoc + length) <= this.byteLength;
     }
 
-    getBinary() {
-        let length = this.byteData.readUInt32BE(this.currentLoc, true);
+    getBinary() : ArrayBuffer {
+        let length = this.byteData.getUint32(this.currentLoc, true);
         this.currentLoc += 4;
         let innerLength = length - 4;
-        let buffer = new Buffer(innerLength);
-        this.byteData.copy(buffer, 0, this.currentLoc, this.currentLoc + innerLength);
+        let buffer = this.byteData.buffer.slice(this.currentLoc, this.currentLoc + innerLength);
         this.currentLoc += innerLength;
         return buffer;
     }
 
-    getLength() {
+    getLength() : number {
         return this.byteLength;
     }
 }

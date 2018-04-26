@@ -8,7 +8,7 @@
  */
 import {Utility} from "../Utility";
 
-abstract class MessageData {
+export abstract class MessageData {
     abstract addToByteData(byteData: DataView, loc: number): void;
 
     abstract getLength(): number;

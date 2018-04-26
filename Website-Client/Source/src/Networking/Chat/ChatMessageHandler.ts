@@ -1,8 +1,12 @@
 import {MessageReader} from "../../Utility/Message/MessageReader";
 import {Controllers} from "../MessageDefinitions/ClientMessageDefinitions";
+import {AppController} from "../../AppController";
 
 export class ChatMessageHandler {
-    addChatMessageListeners : any = [];
+    appController : AppController;
+    constructor(appController : AppController) {
+        this.appController = appController;
+    }
 
     routeMessage(message : MessageReader) {
         let messageID = message.getUint8();
@@ -44,20 +48,14 @@ export class ChatMessageHandler {
             console.trace();
             return;
         }
-        let time = message.getDouble();
+        let time = message.getFloat64();
         if (!message.isAtEndOfData()) {
             console.error('Invalid Message');
             console.trace();
             return;
         }
 
-        //Send to all listeners
-        for (let callback of this.addChatMessageListeners) {
-            callback(boardID, playerID, chatPrefix, chatMessage, time).then();
-        }
-    }
-
-    addChatMessageListener(callback : any) {
-        this.addChatMessageListeners.push(callback);
+        //Send to be processed in logic
+        //this.appController.chatController.newChatMessageEvent(boardID, playerID, chatPrefix, chatMessage, time);
     }
 }

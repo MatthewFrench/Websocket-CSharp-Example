@@ -1,60 +1,76 @@
-//const {MessageReader} = require("../Utility/Message/MessageReader.js");
-//const {MessageWriter} = require("../Utility/Message/MessageWriter.js");
-//const {MessageRouter} = require("./MessageRouter.js");
+import {MessageRouter} from "./MessageRouter";
 
 import {AppController} from "../AppController";
 
 export class NetworkController {
-    port : any = '7779';
-    ip : any = 'localhost';
-    server : any = `http://${this.ip}:${this.port}`;
-    connection : any = null;
-    connected : any = false;
-    pingTime : any = 0;
-    pingTimeArray : any = [];
+    port : string = '7779';
+    ip : string = 'localhost';
+    serverURL : string = `ws://${this.ip}:${this.port}`;
+    connection : WebSocket = null;
+    connected : boolean = false;
+    pingTime : number = 0;
+    pingTimeArray : number[] = [];
     appController : AppController;
+    messageRouter : MessageRouter;
 
     constructor(appController : AppController) {
         this.appController = appController;
-        var test = new WebsocketClient();
-
-        this.connection = this.socketIO.connect(this.server);
-        this.connection.on('connect_failed', this.ConnectFailed);
-        this.connection.on('connect', this.Connected);
-        this.connection.on('message', this.GotMessage);
-        this.connection.on('disconnect', this.Disconnected);
-
-        this.connection.on('pong', function(ms : any) {
-            this.pingTime = ms;
-            this.pingTimeArray.push(this.pingTime);
-            if (this.pingTimeArray.length > 3) {
-                this.pingTimeArray.shift();
-            }
-        });
+        this.messageRouter = new MessageRouter(this);
     }
 
-    connectFailedEvent() {
-        NetworkHandler.HandleConnectFailed();
-        console.log('Failed to connect to server.');
-    }
+    initialize = () => {
+        // Create WebSocket connection.
+        this.connection = new WebSocket(this.serverURL);
 
-    connectedEvent() {
+        // Connection opened
+        this.connection.addEventListener('open', this.connectedEvent);
+
+        // Listen for messages
+        this.connection.addEventListener('message', this.gotMessageEvent);
+
+        // Connection closed
+        this.connection.addEventListener('close', this.disconnectedEvent);
+
+        // Connection error
+        this.connection.addEventListener('error', this.errorEvent);
+    };
+
+    connectedEvent = () => {
         this.connected = true;
-        NetworkHandler.HandleConnect();
         console.log('Client has connected to the server!');
-    }
+    };
 
-    disconnectedEvent() {
-        this.connected = false;
-        NetworkHandler.HandleDisconnect();
-        console.log('The client has disconnected!');
-    }
+    disconnectedEvent = (close : CloseEvent) => {
+        if (this.connected == false) {
+            //Try to reconnect at an interval
+            setTimeout(this.initialize, 10 * 1000);
+        } else {
+            //Was just connected and now isn't, try an immediate reconnect
+            this.initialize();
+            this.connected = false;
+            console.log('The client has disconnected!');
+        }
+    };
 
-    getIsConnected() {
+    errorEvent = (error : ErrorEvent) => {
+        console.log('Connection error: ' + JSON.stringify(error));
+    };
+
+    getIsConnected = () : boolean => {
         return this.connected;
-    }
+    };
 
-    getPing() {
+    //This will be the heartbeat to detect dropped connections
+    //Give a heartbeat of 10 seconds after expected ping interval
+    pongEvent = (milliseconds : number) => {
+        this.pingTime = milliseconds;
+        this.pingTimeArray.push(this.pingTime);
+        if (this.pingTimeArray.length > 3) {
+            this.pingTimeArray.shift();
+        }
+    };
+
+    getPing() : number {
         if (this.pingTimeArray.length === 0) {
             return this.pingTime;
         }
@@ -66,16 +82,21 @@ export class NetworkController {
         return (this.pingTime + average) / 2.0;
     }
 
-    gotMessageEvent(message : any) {
+    getAppController() : AppController {
+        return this.appController;
+    }
+
+    gotMessageEvent = (event : MessageEvent) => {
+        let message = event.data;
         if (message instanceof ArrayBuffer === false) {
             console.error('Invalid Message Type Not Binary');
             console.trace();
             return;
         }
-        NetworkHandler.HandleMessage(message);
-    }
+        this.messageRouter.handleMessageEvent(message);
+    };
 
-    Send(message : any) {
+    send(message : ArrayBuffer) {
         this.connection.send(message);
     }
 }
