@@ -1,18 +1,22 @@
 ﻿using System;
-using WebSocketSharp;
-using WebSocketSharp.Server;
+using System.Threading;
 namespace WebsocketServer
 {
     public class ServerController
     {
+		Networking networking;
         public ServerController()
-        {
-			Console.WriteLine("Hello World!");
+        {         
+            networking = new Networking(this);
 
-            var networking = new Networking(this);
             networking.Start();
             Console.ReadKey(true);
             networking.Stop();
+			Thread.Sleep(1000);
         }
+
+		public Networking GetNetworking() {
+			return this.networking;
+		}
     }
 }

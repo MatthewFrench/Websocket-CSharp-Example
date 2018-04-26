@@ -1,7 +1,7 @@
 import {MessageData, MessageDataUint16, MessageDataString, MessageDataInt32,
     MessageDataInt16, MessageDataInt8, MessageDataFloat32,
     MessageDataFloat64, MessageDataBinary, MessageDataUint8,
-    MessageDataUint32} from 'MessageData';
+    MessageDataUint32} from './MessageData';
 
 /**
  * Writes a message and produces a binary buffer.

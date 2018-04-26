@@ -6,11 +6,22 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="websocket-sharp">
-      <HintPath>websocket-sharp.dll</HintPath>
-    </Reference>
+    <Folder Include="Networking\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Networking\" />
+    <None Remove="websocket-sharp.dll" />
+    <None Remove="Fleck.pdb" />
+    <None Remove="Fleck.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Networking\NetworkingClient.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Fleck">
+      <HintPath>Fleck.dll</HintPath>
+    </Reference>
+    <Reference Include="Fleck">
+      <HintPath>Fleck.dll</HintPath>
+    </Reference>
   </ItemGroup>
 </Project>

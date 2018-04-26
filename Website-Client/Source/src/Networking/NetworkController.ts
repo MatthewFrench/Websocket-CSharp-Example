@@ -1,6 +1,7 @@
 import {MessageRouter} from "./MessageRouter";
 
 import {AppController} from "../AppController";
+import {ChatMessageCreator} from "./Chat/ChatMessageCreator";
 
 export class NetworkController {
     port : string = '7779';
@@ -38,6 +39,8 @@ export class NetworkController {
     connectedEvent = () => {
         this.connected = true;
         console.log('Client has connected to the server!');
+
+        this.send(ChatMessageCreator.NewChatMessage('Hello!'));
     };
 
     disconnectedEvent = (close : CloseEvent) => {
