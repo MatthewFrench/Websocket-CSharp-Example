@@ -1,4 +1,4 @@
-//import {Network} from "./Network";
+//import {NetworkController} from "./NetworkController";
 
 //const {MessageReader} = require("../Utility/Message/MessageReader.js");
 //const {Controllers} = require("./MessageDefinitions/ClientMessageDefinitions.js");
@@ -8,14 +8,17 @@
 
 
 
+import {NetworkController} from "./NetworkController";
+
 /**
  * Routes the messages to controllers.
  */
-export class NetworkHandler {
-    static HandleConnectCallback : any;
-    static HandleDisconnectCallback : any;
-    static HandleConnectFailedCallback : any;
-    static HandleMessage(binary : any) {
+export class MessageRouter {
+    networkController : NetworkController;
+    constructor(networkController : NetworkController) {
+        this.networkController = networkController;
+    }
+    handleMessageEvent(binary : any) {
         let message = new MessageReader(binary);
         //Get the controller
         let controllerID = message.getUint8();
@@ -25,23 +28,13 @@ export class NetworkHandler {
                 ChatMessageHandler.RouteMessage(message);
             } break;
             case Controllers.Network.ID: {
-                NetworkHandler.HandleNetworkMessages(message);
+                MessageRouter.HandleNetworkMessages(message);
                 break;
             }
-            default: {
-                console.error('Unknown Message');
-                console.trace();
-            }
-        }
-    }
-
-    static HandleNetworkMessages(message : any) {
-        let messageID = message.getUint8();
-        switch(messageID) {
             case Controllers.Network.Messages.CombinedMessage: {
                 while (message.hasBinary()) {
                     try {
-                        NetworkHandler.HandleMessage(message.getBinary());
+                        MessageRouter.HandleMessage(message.getBinary());
                     } catch (e) {
                         console.log(e);
                         console.error('Badly written combined message.');
@@ -53,28 +46,10 @@ export class NetworkHandler {
                     console.trace();
                 }
             } break;
+            default: {
+                console.error('Unknown Message');
+                console.trace();
+            }
         }
-    }
-
-    static HandleConnectFailed() {
-        NetworkHandler.HandleConnectFailedCallback().then();
-    }
-
-    static HandleConnect() {
-        NetworkHandler.HandleConnectCallback().then();
-    }
-
-    static HandleDisconnect() {
-        NetworkHandler.HandleDisconnectCallback().then();
-    }
-
-    static SetHandleConnectFailedCallback(callback : any) {
-        NetworkHandler.HandleConnectFailedCallback = callback;
-    }
-    static SetHandleConnectCallback(callback : any) {
-        NetworkHandler.HandleConnectCallback = callback;
-    }
-    static SetHandleDisconnectCallback(callback : any) {
-        NetworkHandler.HandleDisconnectCallback = callback;
     }
 }

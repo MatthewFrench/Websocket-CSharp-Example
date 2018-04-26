@@ -3,10 +3,10 @@ import {Interface} from '../Utility/Interface';
 /**
  * Handles initializing the entire interface for the main site.
  */
-export class MainSite {
+export class MainPage {
     mainInterface: HTMLElement;
     constructor() {
-        this.mainInterface = Interface.Create({type: 'div', className: 'MainSite', text: 'test'});
+        this.mainInterface = Interface.Create({type: 'div', className: 'MainPage', text: 'test'});
     }
 
     /**

@@ -3,7 +3,7 @@
 module.exports = {
   entry: {
     'site': [
-      './src/app.ts'
+      './src/Main.ts'
     ]
   },
   devtool: 'inline-source-map',
