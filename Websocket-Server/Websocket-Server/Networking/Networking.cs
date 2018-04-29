@@ -2,7 +2,7 @@
 using Fleck;
 using System.Collections.Generic;
 using System.Text;
-namespace WebsocketServer
+namespace AppServer
 {
 	public class Networking
 	{

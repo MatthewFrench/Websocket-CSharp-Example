@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <Folder Include="Networking\" />
+    <Folder Include="Networking\Message\" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="websocket-sharp.dll" />
@@ -23,5 +24,8 @@
     <Reference Include="Fleck">
       <HintPath>Fleck.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="ByteArray" Version="1.1.4" />
   </ItemGroup>
 </Project>

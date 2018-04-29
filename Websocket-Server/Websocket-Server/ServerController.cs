@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading;
-namespace WebsocketServer
+namespace AppServer
 {
     public class ServerController
     {
