@@ -78,10 +78,6 @@ export class MessageReader {
         return data;
     }
 
-    hasDouble() : boolean {
-        return (this.currentLoc + 8) <= this.byteLength;
-    }
-
     getFloat64() : number {
         let data = this.byteData.getFloat32(this.currentLoc, true);
         this.currentLoc += 8;

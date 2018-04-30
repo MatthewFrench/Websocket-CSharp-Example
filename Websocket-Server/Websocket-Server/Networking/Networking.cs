@@ -37,6 +37,8 @@ namespace AppServer
             }
 
 			Console.WriteLine("Got Message! : new byte[] { " + sb.ToString() + " } = " + Encoding.UTF8.GetString(binary));
+
+
 		}
 
 

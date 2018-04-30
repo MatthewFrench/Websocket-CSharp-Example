@@ -4,8 +4,8 @@ namespace AppServer
 {
 	public abstract class MessageData
 	{
-		public abstract void addToByteData(ByteArray byteData, int loc);
-		public abstract int getLength();
+		public abstract void AddToByteData(ByteArray byteData, int loc);
+		public abstract int GetLength();
 	}
 
 	public class MessageDataUint8 : MessageData
@@ -17,12 +17,12 @@ namespace AppServer
 			this.value = value;
 		}
 
-		public override void addToByteData(ByteArray byteData, int loc)
+		public override void AddToByteData(ByteArray byteData, int loc)
 		{
 			byteData.Write(this.value, loc, Endianess.BigEndian);
 		}
 
-		public override int getLength()
+		public override int GetLength()
 		{
 			return 1;
 		}
@@ -39,12 +39,12 @@ namespace AppServer
 			this.value = value;
 		}
 
-		public override void addToByteData(ByteArray byteData, int loc)
+		public override void AddToByteData(ByteArray byteData, int loc)
 		{
             byteData.Write(this.value, loc, Endianess.BigEndian);
 		}
 
-		public override int getLength()
+		public override int GetLength()
 		{
 			return 1;
 		}
@@ -59,12 +59,12 @@ namespace AppServer
 			this.value = value;
 		}
 
-		public override void addToByteData(ByteArray byteData, int loc)
+		public override void AddToByteData(ByteArray byteData, int loc)
 		{
             byteData.Write(this.value, loc, Endianess.BigEndian);
 		}
 
-		public override int getLength()
+		public override int GetLength()
 		{
 			return 2;
 		}
@@ -79,12 +79,12 @@ namespace AppServer
 			this.value = value;
 		}
 
-		public override void addToByteData(ByteArray byteData, int loc)
+		public override void AddToByteData(ByteArray byteData, int loc)
 		{
             byteData.Write(this.value, loc, Endianess.BigEndian);
 		}
 
-		public override int getLength()
+		public override int GetLength()
 		{
 			return 2;
 		}
@@ -99,12 +99,12 @@ namespace AppServer
 			this.value = value;
 		}
 
-		public override void addToByteData(ByteArray byteData, int loc)
+		public override void AddToByteData(ByteArray byteData, int loc)
 		{
             byteData.Write(this.value, loc, Endianess.BigEndian);
 		}
 
-		public override int getLength()
+		public override int GetLength()
 		{
 			return 4;
 		}
@@ -119,12 +119,12 @@ namespace AppServer
 			this.value = value;
 		}
 
-		public override void addToByteData(ByteArray byteData, int loc)
+		public override void AddToByteData(ByteArray byteData, int loc)
 		{
             byteData.Write(this.value, loc, Endianess.BigEndian);
 		}
 
-		public override int getLength()
+		public override int GetLength()
 		{
 			return 4;
 		}
@@ -139,12 +139,12 @@ namespace AppServer
 			this.value = value;
 		}
 
-		public override void addToByteData(ByteArray byteData, int loc)
+		public override void AddToByteData(ByteArray byteData, int loc)
 		{
             byteData.Write(this.value, loc, Endianess.BigEndian);
 		}
 
-		public override int getLength()
+		public override int GetLength()
 		{
 			return 4;
 		}
@@ -159,12 +159,12 @@ namespace AppServer
 			this.value = value;
 		}
 
-		public override void addToByteData(ByteArray byteData, int loc)
+		public override void AddToByteData(ByteArray byteData, int loc)
 		{
             byteData.Write(this.value, loc, Endianess.BigEndian);
 		}
 
-		public override int getLength()
+		public override int GetLength()
 		{
 			return 8;
 		}
@@ -173,8 +173,8 @@ namespace AppServer
 	public class MessageDataString : MessageData
 	{
 		byte[] value;
-		int totalLength;
-        
+		readonly int totalLength;
+
 		public MessageDataString(string value)
 		{
 			this.value = System.Text.Encoding.UTF8.GetBytes(value);
@@ -182,12 +182,12 @@ namespace AppServer
 			this.totalLength = 4 + this.value.Length;
 		}
 
-		public override void addToByteData(ByteArray byteData, int loc)
+		public override void AddToByteData(ByteArray byteData, int loc)
 		{
 			byteData.Write(value, 0, value.Length, loc);
 		}
 
-		public override int getLength()
+		public override int GetLength()
 		{
 			return this.totalLength;
 		}
@@ -196,7 +196,7 @@ namespace AppServer
 	public class MessageDataBinary : MessageData
 	{
 		byte[] value;
-		int totalLength;
+		readonly int totalLength;
 
 		public MessageDataBinary(byte[] value)
 		{
@@ -205,12 +205,12 @@ namespace AppServer
 			this.totalLength = 4 + this.value.Length;
 		}
 
-		public override void addToByteData(ByteArray byteData, int loc)
+		public override void AddToByteData(ByteArray byteData, int loc)
 		{
             byteData.Write(value, 0, value.Length, loc);
 		}
 
-		public override int getLength()
+		public override int GetLength()
 		{
 			return this.totalLength;
 		}
