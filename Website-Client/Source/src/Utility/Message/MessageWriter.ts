@@ -29,7 +29,7 @@ export class MessageWriter {
     let byteData = new DataView(new ArrayBuffer(totalLength));
     let loc = 0;
     //Append the message length
-    byteData.setUint32(loc, totalLength, true);
+    byteData.setUint32(loc, totalLength, false);
     loc += 4;
     //Append the message
     for (let data of this.dataArray) {

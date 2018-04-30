@@ -2,6 +2,9 @@ import {MessageRouter} from "./MessageRouter";
 
 import {AppController} from "../AppController";
 import {ChatMessageCreator} from "./Chat/ChatMessageCreator";
+import {Controllers} from "./MessageDefinitions/ServerMessageDefinitions";
+import {MessageWriter} from "../Utility/Message/MessageWriter";
+import {MessageReader} from "../Utility/Message/MessageReader";
 
 export class NetworkController {
     port : string = '7779';
@@ -22,6 +25,7 @@ export class NetworkController {
     initialize = () => {
         // Create WebSocket connection.
         this.connection = new WebSocket(this.serverURL);
+        this.connection.binaryType = "arraybuffer";
 
         // Connection opened
         this.connection.addEventListener('open', this.connectedEvent);
@@ -40,7 +44,20 @@ export class NetworkController {
         this.connected = true;
         console.log('Client has connected to the server!');
 
-        this.send(ChatMessageCreator.NewChatMessage('Hello!'));
+        let message = new MessageWriter();
+        message.addUint8(1);
+        message.addInt8(-1);
+        message.addUint16(2);
+        message.addInt16(-2);
+        message.addUint32(3);
+        message.addInt32(-3);
+        message.addFloat32(3.3);
+        message.addFloat64(4.4);
+        message.addString("This is a test string");
+        let message2 = new MessageWriter();
+        message2.addString("Inner Binary");
+        message.addBinary(message2.toBuffer());
+        this.send(message.toBuffer());
     };
 
     disconnectedEvent = (close : CloseEvent) => {
@@ -90,13 +107,34 @@ export class NetworkController {
     }
 
     gotMessageEvent = (event : MessageEvent) => {
-        let message = event.data;
-        if (message instanceof ArrayBuffer === false) {
+        let messageData = event.data;
+        if (messageData instanceof ArrayBuffer === false) {
             console.error('Invalid Message Type Not Binary');
             console.trace();
             return;
         }
-        this.messageRouter.handleMessageEvent(message);
+        this.messageRouter.handleMessageEvent(messageData);
+        
+        //Handle test message
+        document.body.innerText += ("\n" + "Bytes: " + messageData.byteLength);
+        var enc = new TextDecoder("utf-8");
+        document.body.innerText +=("\n" + "Got Message! : new byte[] { " + messageData + " } = " + enc.decode(messageData));
+        document.body.innerText +=("\n" + "Parsed message: ");
+        var message = new MessageReader(messageData);
+        document.body.innerText +=("\n" + "GetUint8: " + message.getUint8());
+        document.body.innerText +=("\n" + "GetInt8: " + message.getInt8());
+        document.body.innerText +=("\n" + "GetUint16: " + message.getUint16());
+        document.body.innerText +=("\n" + "GetInt16: " + message.getInt16());
+        document.body.innerText +=("\n" + "GetUint32: " + message.getUint32());
+        document.body.innerText +=("\n" + "GetInt32: " + message.getInt32());
+        document.body.innerText +=("\n" + "GetFloat32: " + message.getFloat32());
+        document.body.innerText +=("\n" + "GetFloat64: " + message.getFloat64());
+        document.body.innerText +=("\n" + "GetString: " + message.getString());
+        var message2 = new MessageReader(message.getBinary());
+        document.body.innerText +=("\n" + "GetBinary GetString: " + message2.getString());
+        if (message.isAtEndOfData()) {
+            document.body.innerText +=("\n" + "End of Message");
+        }
     };
 
     send(message : ArrayBuffer) {

@@ -43,7 +43,7 @@ export class ChatMessageHandler {
             return;
         }
         let chatMessage = message.getString();
-        if (!message.hasDouble()) {
+        if (!message.hasFloat64()) {
             console.error('Invalid Message');
             console.trace();
             return;

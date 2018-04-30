@@ -16,7 +16,7 @@ namespace AppServer
 	public class MessageWriter
 	{
 		List<MessageData> dataArray;
-		int innerByteLength;
+		uint innerByteLength;
 		public MessageWriter()
 		{
 			dataArray = new List<MessageData>();
@@ -27,16 +27,16 @@ namespace AppServer
 		public byte[] ToBuffer()
 		{
 			//Take length of all data and add the message length holder
-			int totalLength = this.innerByteLength + 4;
-			ByteArray byteData = new ByteArray(totalLength);
-			int loc = 0;
+			uint totalLength = this.innerByteLength + 4;
+			ByteArray byteData = new ByteArray((int)totalLength);
+			uint loc = 0;
 			//Append the message length
-			byteData.Write((uint)totalLength, loc, Endianess.BigEndian);
+			byteData.Write(totalLength, (int)loc, Endianess.BigEndian);
 			loc += 4;
 			//Append the message
 			foreach (MessageData data in dataArray)
 			{
-				data.AddToByteData(byteData, loc);
+				data.AddToByteData(byteData, (int)loc);
 				loc += data.GetLength();
 			}
 			return byteData.Buffer;
@@ -104,7 +104,7 @@ namespace AppServer
 			this.dataArray.Add(data);
 			this.innerByteLength += data.GetLength();
 		}
-
+        
 		public void AddBinary(byte[] value)
 		{
 			var data = new MessageDataBinary(value);
@@ -112,7 +112,7 @@ namespace AppServer
 			this.innerByteLength += data.GetLength();
 		}
 
-		public int GetLength()
+		public uint GetLength()
 		{
 			return this.innerByteLength + 4;
 		}

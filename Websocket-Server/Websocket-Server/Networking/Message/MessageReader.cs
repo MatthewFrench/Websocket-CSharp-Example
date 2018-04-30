@@ -140,7 +140,7 @@ namespace AppServer
 
 			var byteArray = new byte[innerLength];
 			this.byteData.Read(byteArray, 0, (int)innerLength, (int)this.currentLoc);         
-			var returnString = System.Text.Encoding.UTF8.GetString(byteArray);
+			var returnString = System.Text.Encoding.Unicode.GetString(byteArray);
 			this.currentLoc += innerLength;
 			return returnString;
 		}

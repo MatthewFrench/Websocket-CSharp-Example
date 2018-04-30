@@ -54,7 +54,7 @@ export class MessageDataUint16 implements MessageData {
     }
 
     addToByteData(byteData: DataView, loc: number) {
-        byteData.setUint16(loc, this.value, true);
+        byteData.setUint16(loc, this.value, false);
     }
 
     getLength() {
@@ -70,7 +70,7 @@ export class MessageDataInt16 implements MessageData {
     }
 
     addToByteData(byteData: DataView, loc: number) {
-        byteData.setInt16(loc, this.value, true);
+        byteData.setInt16(loc, this.value, false);
     }
 
     getLength() {
@@ -86,7 +86,7 @@ export class MessageDataUint32 implements MessageData {
     }
 
     addToByteData(byteData: DataView, loc: number) {
-        byteData.setUint32(loc, this.value, true);
+        byteData.setUint32(loc, this.value, false);
     }
 
     getLength() {
@@ -102,7 +102,7 @@ export class MessageDataInt32 implements MessageData {
     }
 
     addToByteData(byteData: DataView, loc: number) {
-        byteData.setInt32(loc, this.value, true);
+        byteData.setInt32(loc, this.value, false);
     }
 
     getLength() {
@@ -118,7 +118,7 @@ export class MessageDataFloat32 implements MessageData {
     }
 
     addToByteData(byteData: DataView, loc: number) {
-        byteData.setFloat32(loc, this.value, true);
+        byteData.setFloat32(loc, this.value, false);
     }
 
     getLength() {
@@ -134,7 +134,7 @@ export class MessageDataFloat64 implements MessageData {
     }
 
     addToByteData(byteData: DataView, loc: number) {
-        byteData.setFloat64(loc, this.value, true);
+        byteData.setFloat64(loc, this.value, false);
     }
 
     getLength() {
@@ -153,7 +153,7 @@ export class MessageDataString implements MessageData {
     }
 
     addToByteData(byteData: DataView, loc: number) {
-        byteData.setUint32(loc, this.totalLength, true);
+        byteData.setUint32(loc, this.totalLength, false);
         //Copy each byte of the value to the byteData
         let stringData = new DataView(this.value);
         let byteIndex = loc + 4;
@@ -179,12 +179,12 @@ export class MessageDataBinary implements MessageData {
     }
 
     addToByteData(byteData: DataView, loc: number) {
-        byteData.setUint32(loc, this.totalLength, true);
+        byteData.setUint32(loc, this.totalLength, false);
         //Copy each byte of the value to the byteData
-        let stringData = new DataView(this.value);
+        let data = new DataView(this.value);
         let byteIndex = loc + 4;
-        for (let index = 0; index < stringData.byteLength; index++) {
-            byteData.setUint8(byteIndex, stringData.getUint8(index));
+        for (let index = 0; index < data.byteLength; index++) {
+            byteData.setUint8(byteIndex, data.getUint8(index));
             byteIndex++;
         }
     }

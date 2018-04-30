@@ -18,6 +18,21 @@ namespace AppServer
 			webSockets.Add(socket);
 			Console.WriteLine("Open!");
 			Console.WriteLine("Clients connected: " + GetNumberOfConnectedClients());
+           
+            var message = new MessageWriter();
+            message.AddUint8(1);
+            message.AddInt8(-1);
+            message.AddUint16(2);
+            message.AddInt16(-2);
+            message.AddUint32(3);
+            message.AddInt32(-3);
+            message.AddFloat32(3.3f);
+            message.AddFloat64(4.4);
+            message.AddString("This is a test string");
+            var message2 = new MessageWriter();
+            message2.AddString("Inner Binary");
+            message.AddBinary(message2.ToBuffer());
+			socket.Send(message.ToBuffer());
 		}
         
         public void ClientDisconnectedEvent(IWebSocketConnection socket)
@@ -35,10 +50,24 @@ namespace AppServer
 				}
                 sb.Append(b);
             }
-
+			Console.WriteLine("Bytes: " + binary.Length);
 			Console.WriteLine("Got Message! : new byte[] { " + sb.ToString() + " } = " + Encoding.UTF8.GetString(binary));
-
-
+			Console.WriteLine("Parsed message: ");
+			var message = new MessageReader(binary);
+			Console.WriteLine("GetUint8: " + message.GetUint8());
+			Console.WriteLine("GetInt8: " + message.GetInt8());
+			Console.WriteLine("GetUint16: " + message.GetUint16());
+			Console.WriteLine("GetInt16: " + message.GetInt16());
+			Console.WriteLine("GetUint32: " + message.GetUint32());
+			Console.WriteLine("GetInt32: " + message.GetInt32());
+			Console.WriteLine("GetFloat32: " + message.GetFloat32());
+			Console.WriteLine("GetFloat64: " + message.GetFloat64());
+			Console.WriteLine("GetString: " + message.GetString());
+			var message2 = new MessageReader(message.GetBinary());
+			Console.WriteLine("GetBinary GetString: " + message2.GetString());
+			if (message.IsAtEndOfData()) {
+				Console.WriteLine("End of Message");
+			}
 		}
 
 
